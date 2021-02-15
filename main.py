@@ -6,14 +6,12 @@ app = FastAPI()
 @app.get('/')
 def index():
     return {
-        'data': 'hello world'
+        'data': 'blog List'
     }
 
 
-@app.get('/about')
-def about():
+@app.get('/blog/{id}')
+def show(id):
     return {
-        'data': {
-            'key': 'about api'
-        }
+        'data': id
     }
