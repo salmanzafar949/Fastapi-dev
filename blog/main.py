@@ -1,4 +1,4 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, status, Response, HTTPException
 from . import schemas
 from . import models
 from .database import engine, SessionDb
@@ -17,7 +17,7 @@ def get_db():
         db.close()
 
 
-@app.post('/blog', status_code=201)
+@app.post('/blog', status_code=status.HTTP_201_CREATED)
 def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     newBlog = models.Blog(title=blog.title, body=blog.body)
     db.add(newBlog)
@@ -27,11 +27,19 @@ def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     return newBlog
 
 
-@app.get('/blogs', status_code=200)
+@app.get('/blogs', status_code=status.HTTP_200_OK)
 def blogs(db: Session = Depends(get_db)):
     return db.query(models.Blog).all()
 
 
-@app.get('/blog/{id}', status_code=200)
-def show(id, db:Session=Depends(get_db)):
-    return db.query(models.Blog).filter(models.Blog.id == id).first()
+@app.get('/blog/{id}', status_code=status.HTTP_200_OK)
+def show(id, response:Response, db: Session = Depends(get_db)):
+    blog = db.query(models.Blog).filter(models.Blog.id == id).first()
+    if not blog:
+        response.status_code = status.HTTP_404_NOT_FOUND
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Model Not Found')
+        # return {
+        #     'detail': 'Blog Not Found'
+        # }
+
+    return blog
