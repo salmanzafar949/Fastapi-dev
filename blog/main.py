@@ -17,7 +17,7 @@ def get_db():
         db.close()
 
 
-@app.post('/blog')
+@app.post('/blog', status_code=201)
 def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     newBlog = models.Blog(title=blog.title, body=blog.body)
     db.add(newBlog)
@@ -27,11 +27,11 @@ def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     return newBlog
 
 
-@app.get('/blogs')
+@app.get('/blogs', status_code=200)
 def blogs(db: Session = Depends(get_db)):
     return db.query(models.Blog).all()
 
 
-@app.get('/blog/{id}')
+@app.get('/blog/{id}', status_code=200)
 def show(id, db:Session=Depends(get_db)):
     return db.query(models.Blog).filter(models.Blog.id == id).first()
