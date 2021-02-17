@@ -25,3 +25,8 @@ def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     db.refresh(newBlog)
 
     return newBlog
+
+
+@app.get('/blogs')
+def blogs(db: Session = Depends(get_db)):
+    return db.query(models.Blog).all()
