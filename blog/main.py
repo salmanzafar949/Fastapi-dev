@@ -33,7 +33,7 @@ def blogs(db: Session = Depends(get_db)):
 
 
 @app.get('/blog/{id}', status_code=status.HTTP_200_OK)
-def show(id, response:Response, db: Session = Depends(get_db)):
+def show(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -43,3 +43,11 @@ def show(id, response:Response, db: Session = Depends(get_db)):
         # }
 
     return blog
+
+
+@app.delete('/blog/{id}', status_code=status.HTTP_204_NO_CONTENT)
+def destroy(id, db: Session = Depends(get_db)):
+    db.query(models.Blog).filter(models.Blog.id == id).delete(synchronize_session=False)
+    db.commit()
+
+    return {}
