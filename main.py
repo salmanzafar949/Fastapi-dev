@@ -1,14 +1,18 @@
 from fastapi import FastAPI
 from typing import Optional
+from pydantic import BaseModel
 
 app = FastAPI()
 
 
+class Blog(BaseModel):
+    title: str
+    body: str
+    published: Optional[bool]
+
+
 @app.get('/')
-def index(limit: int = 10, published: bool = True, sort:Optional[str]=None):
-
-    return sort
-
+def index(limit: int = 10, published: bool = True, sort: Optional[str] = None):
     if published:
         return {
             'data': f'{limit} published blogs'
@@ -31,3 +35,8 @@ def show(id: int):
     return {
         'data': id
     }
+
+
+@app.post('/blog')
+def store(blog: Blog):
+    return blog
