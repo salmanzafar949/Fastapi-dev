@@ -7,4 +7,4 @@ class Blog(Base):
     __tablename__='blogs'
     id = Column(Integer, primary_key=True, index=True)
     title = Column(String)
-    Body = Column(String)
+    body = Column(String)

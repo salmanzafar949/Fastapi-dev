@@ -7,6 +7,6 @@ DB_URL = 'sqlite:///./blog.db'
 
 engine = create_engine(DB_URL, connect_args={"check_same_thread": False})
 
-Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
+SessionDb = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
 Base = declarative_base()
