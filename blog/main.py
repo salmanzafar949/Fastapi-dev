@@ -30,3 +30,8 @@ def store(blog: schemas.Blog, db: Session = Depends(get_db)):
 @app.get('/blogs')
 def blogs(db: Session = Depends(get_db)):
     return db.query(models.Blog).all()
+
+
+@app.get('/blog/{id}')
+def show(id, db:Session=Depends(get_db)):
+    return db.query(models.Blog).filter(models.Blog.id == id).first()
