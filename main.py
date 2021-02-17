@@ -4,9 +4,9 @@ app = FastAPI()
 
 
 @app.get('/')
-def index():
+def index(limit):
     return {
-        'data': 'blog List'
+        'data': f'{limit} from the blog List'
     }
 
 
