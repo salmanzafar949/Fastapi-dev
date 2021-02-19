@@ -36,3 +36,8 @@ class BlogResource(BaseModel):
 
     class Config:
         orm_mode = True
+
+
+class Login(BaseModel):
+    email: str
+    password: str
