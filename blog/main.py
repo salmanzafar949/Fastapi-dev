@@ -4,6 +4,9 @@ from . import models
 from .database import engine, SessionDb
 from sqlalchemy.orm import Session
 from typing import List
+from passlib.context import CryptContext
+
+pwd_cxt = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -67,3 +70,14 @@ def destroy(id, db: Session = Depends(get_db)):
     db.commit()
 
     return {}
+
+
+@app.post('/user')
+def create_user(request: schemas.User, db: Session = Depends(get_db)):
+
+    new_user = models.User(name=request.name, email=request.email, password=pwd_cxt.hash(request.password))
+    db.add(new_user)
+    db.commit()
+    db.refresh(new_user)
+
+    return new_user
