@@ -39,7 +39,7 @@ class BlogResource(BaseModel):
 
 
 class Login(BaseModel):
-    username: str
+    email: str
     password: str
 
 
@@ -49,4 +49,4 @@ class Token(BaseModel):
 
 
 class TokenData(BaseModel):
-    username: Optional[str] = None
+    email: Optional[str] = None

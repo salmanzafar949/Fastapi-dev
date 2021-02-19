@@ -8,3 +8,4 @@ SQLAlchemy~=1.3.23
 passlib
 bcrypt
 python-jose
+python-multipart

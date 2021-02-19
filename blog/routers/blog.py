@@ -4,6 +4,7 @@ from .. import schemas
 from ..database import get_db
 from sqlalchemy.orm import Session
 from ..repository import blog as blogRepo
+from ..oauth2 import get_current_user
 
 router = APIRouter(
     prefix="/blog",
@@ -17,7 +18,7 @@ def store(blog: schemas.Blog, db: Session = Depends(get_db)):
 
 
 @router.get('', status_code=status.HTTP_200_OK, response_model=List[schemas.BlogResource])
-def blogs(db: Session = Depends(get_db)):
+def blogs(db: Session = Depends(get_db), current_user: schemas.User = Depends(get_current_user)):
     return blogRepo.get_all(db)
 
 

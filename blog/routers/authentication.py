@@ -3,7 +3,7 @@ from .. import schemas, database, models
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
 from .. import _token
-
+from fastapi.security import OAuth2PasswordRequestForm
 ctx = CryptContext(schemes=['bcrypt'], deprecated="auto")
 
 router = APIRouter(
@@ -13,7 +13,7 @@ router = APIRouter(
 
 
 @router.post('/login', status_code=status.HTTP_200_OK)
-def login(request: schemas.Login, db: Session = Depends(database.get_db)):
+def login(request: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(database.get_db)):
 
     user = db.query(models.User).filter(models.User.email == request.username).first()
 
@@ -25,5 +25,5 @@ def login(request: schemas.Login, db: Session = Depends(database.get_db)):
     access_token = _token.create_access_token(data={'sub': user.email})
 
     return {
-        'access_token': f"Bearer {access_token}"
+        'access_token': access_token
     }
