@@ -3,6 +3,7 @@ from . import schemas
 from . import models
 from .database import engine, SessionDb
 from sqlalchemy.orm import Session
+from typing import List
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -27,12 +28,12 @@ def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     return newBlog
 
 
-@app.get('/blogs', status_code=status.HTTP_200_OK)
+@app.get('/blogs', status_code=status.HTTP_200_OK, response_model=List[schemas.BlogResource])
 def blogs(db: Session = Depends(get_db)):
     return db.query(models.Blog).all()
 
 
-@app.get('/blog/{id}', status_code=status.HTTP_200_OK)
+@app.get('/blog/{id}', status_code=status.HTTP_200_OK, response_model=schemas.BlogResource)
 def show(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
