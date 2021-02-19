@@ -5,10 +5,13 @@ from ..database import get_db
 from .. import models
 from sqlalchemy.orm import Session
 
-router = APIRouter()
+router = APIRouter(
+    prefix="/blog",
+    tags=['Blogs']
+)
 
 
-@router.post('/blog', status_code=status.HTTP_201_CREATED, response_model=schemas.BlogResource, tags=['Blog'])
+@router.post('', status_code=status.HTTP_201_CREATED, response_model=schemas.BlogResource)
 def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     new_blog = models.Blog(title=blog.title, body=blog.body, user_id=1)
     db.add(new_blog)
@@ -18,12 +21,12 @@ def store(blog: schemas.Blog, db: Session = Depends(get_db)):
     return new_blog
 
 
-@router.get('/blogs', status_code=status.HTTP_200_OK, response_model=List[schemas.BlogResource], tags=['Blog'])
+@router.get('', status_code=status.HTTP_200_OK, response_model=List[schemas.BlogResource])
 def blogs(db: Session = Depends(get_db)):
     return db.query(models.Blog).all()
 
 
-@router.get('/blog/{id}', status_code=status.HTTP_200_OK, response_model=schemas.BlogResource, tags=['Blog'])
+@router.get('/{id}', status_code=status.HTTP_200_OK, response_model=schemas.BlogResource)
 def show(id, response: Response, db: Session = Depends(get_db)):
     blog = db.query(models.Blog).filter(models.Blog.id == id).first()
     if not blog:
@@ -36,7 +39,7 @@ def show(id, response: Response, db: Session = Depends(get_db)):
     return blog
 
 
-@router.put('/blog/{id}', status_code=status.HTTP_200_OK, tags=['Blog'])
+@router.put('/{id}', status_code=status.HTTP_200_OK)
 def update(id, blog: schemas.Blog, db: Session = Depends(get_db)):
     updated_blog = db.query(models.Blog).filter(models.Blog.id == id)
 
@@ -51,7 +54,7 @@ def update(id, blog: schemas.Blog, db: Session = Depends(get_db)):
         }
 
 
-@router.delete('/blog/{id}', status_code=status.HTTP_204_NO_CONTENT, tags=['Blog'])
+@router.delete('/{id}', status_code=status.HTTP_204_NO_CONTENT)
 def destroy(id, db: Session = Depends(get_db)):
     db.query(models.Blog).filter(models.Blog.id == id).delete(synchronize_session=False)
     db.commit()
