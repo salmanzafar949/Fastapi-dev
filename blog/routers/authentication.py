@@ -2,6 +2,7 @@ from fastapi import APIRouter, status, Depends, HTTPException
 from .. import schemas, database, models
 from sqlalchemy.orm import Session
 from passlib.context import CryptContext
+from .. import _token
 
 ctx = CryptContext(schemes=['bcrypt'], deprecated="auto")
 
@@ -21,4 +22,8 @@ def login(request: schemas.Login, db: Session = Depends(database.get_db)):
     if not ctx.verify(request.password, user.password):
         raise HTTPException(detail="Invalid Credentials", status_code=status.HTTP_422_UNPROCESSABLE_ENTITY)
 
-    return user
+    access_token = _token.create_access_token(data={'sub': user.email})
+
+    return {
+        'access_token': f"Bearer {access_token}"
+    }
