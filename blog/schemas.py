@@ -1,16 +1,14 @@
 from pydantic import BaseModel
-from typing import Optional
+from typing import Optional, List
 
 
-class Blog(BaseModel):
+class BlogBase(BaseModel):
     title: str
     body: str
     published: Optional[bool] = True
 
 
-class BlogResource(BaseModel):
-    title: str
-
+class Blog(BlogBase):
     class Config:
         orm_mode = True
 
@@ -25,6 +23,16 @@ class UserResource(BaseModel):
     id: int
     name: str
     email: str
+    blogs: List[Blog] = []
+
+    class Config:
+        orm_mode = True
+
+
+class BlogResource(BaseModel):
+    title: str
+    body: str
+    author: UserResource
 
     class Config:
         orm_mode = True

@@ -21,9 +21,9 @@ def get_db():
         db.close()
 
 
-@app.post('/blog', status_code=status.HTTP_201_CREATED, tags=['Blog'])
+@app.post('/blog', status_code=status.HTTP_201_CREATED, response_model=schemas.BlogResource, tags=['Blog'])
 def store(blog: schemas.Blog, db: Session = Depends(get_db)):
-    newBlog = models.Blog(title=blog.title, body=blog.body)
+    newBlog = models.Blog(title=blog.title, body=blog.body, user_id=1)
     db.add(newBlog)
     db.commit()
     db.refresh(newBlog)
