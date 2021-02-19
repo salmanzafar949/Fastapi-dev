@@ -39,5 +39,5 @@ class BlogResource(BaseModel):
 
 
 class Login(BaseModel):
-    email: str
+    username: str
     password: str
